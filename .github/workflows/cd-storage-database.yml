@@ -31,9 +31,9 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           # TODO: -storage- --> -database-. But it will BREAK backward compatibility.
-          name: ${{ github.ref_name }}-storage-geo-jobs
+          name: ${{ github.ref_name }}-storage-geo-jobs-2
           template: cf-stacks/storage-database-stack.yml
-          tags: "[ { \"Key\": \"app\", \"Value\": \"geo-jobs\" }, { \"Key\": \"env\", \"Value\": \"${{ github.ref_name }}\" }, { \"Key\": \"user:poja\", \"Value\": \"geo-jobs\" } ]"
+          tags: "[ { \"Key\": \"app\", \"Value\": \"geo-jobs-2\" }, { \"Key\": \"env\", \"Value\": \"${{ github.ref_name }}\" }, { \"Key\": \"user:poja\", \"Value\": \"geo-jobs-2\" } ]"
           capabilities: CAPABILITY_NAMED_IAM
           no-fail-on-empty-changeset: "1"
           parameter-overrides:

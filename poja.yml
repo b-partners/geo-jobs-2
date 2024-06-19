@@ -1,4 +1,4 @@
-app_name: geo-jobs
+app_name: geo-jobs-2
 aurora_auto_pause: 'true'
 aurora_max_capacity: 64
 aurora_min_capacity: 64

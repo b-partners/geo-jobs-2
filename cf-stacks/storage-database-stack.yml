@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: geo-jobs - Storage Postgres
+Description: geo-jobs-2 - Storage Postgres
 
 Parameters:
   Env:
     Type: String
   DBName:
     Type: String
-    Default: geo-jobs-rds
+    Default: geo-jobs-2-rds
   ProdDbClusterTimeout:
     Type: Number
 
@@ -19,8 +19,8 @@ Resources:
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: !Join [ '', [ Subnet group for geo-jobs , !Ref Env ] ]
-      DBSubnetGroupName: !Join [ '', [ geo-jobs-, !Ref Env, -subnet-group ] ]
+      DBSubnetGroupDescription: !Join [ '', [ Subnet group for geo-jobs-2 , !Ref Env ] ]
+      DBSubnetGroupName: !Join [ '', [ geo-jobs-2-, !Ref Env, -subnet-group ] ]
       SubnetIds:
         - !Sub '{{resolve:ssm:/bpartners-imagery/private/subnet1/id}}'
         - !Sub '{{resolve:ssm:/bpartners-imagery/private/subnet2/id}}'
@@ -35,8 +35,8 @@ Resources:
       Engine: aurora-postgresql
       EngineMode: serverless
       EngineVersion: 13.9 #Only postgresql version 13.9 and 11.9 supports Aurora serverless v1
-      MasterUsername: !Sub '{{resolve:ssm:/geo-jobs/${Env}/db/username}}'
-      MasterUserPassword: !Sub '{{resolve:ssm:/geo-jobs/${Env}/db/password}}'
+      MasterUsername: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/db/username}}'
+      MasterUserPassword: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/db/password}}'
       VpcSecurityGroupIds:
         - !Sub '{{resolve:ssm:/bpartners-imagery/sg/id}}'
       ScalingConfiguration:
@@ -51,7 +51,7 @@ Resources:
   DatabaseClusterSSM:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Join [ '', [ /geo-jobs/, !Ref Env, /db/url ] ]
+      Name: !Join [ '', [ /geo-jobs-2/, !Ref Env, /db/url ] ]
       Type: String
       Value:
         Fn::Join:
@@ -70,7 +70,7 @@ Resources:
   DatabaseClusterIdentifierSSM:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Join [ '', [ /geo-jobs/, !Ref Env, /db/identifier ] ]
+      Name: !Join [ '', [ /geo-jobs-2/, !Ref Env, /db/identifier ] ]
       Type: String
       Value: !GetAtt DatabaseCluster.Endpoint.Address
 

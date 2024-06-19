@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: geo-jobs - Computation and API
+Description: geo-jobs-2 - Computation and API
 
 Globals:
   Function:
@@ -23,21 +23,21 @@ Globals:
     Environment:
       Variables:
         ENV: !Ref Env
-        AWS_EVENT_STACK_1_SQS_QUEUE_URL: !Sub '{{resolve:ssm:/geo-jobs/${Env}/1/sqs/mailbox-queue-url}}'
-        AWS_EVENT_STACK_1_EVENTBRIDGE_BUS: !Sub '{{resolve:ssm:/geo-jobs/${Env}/1/eventbridge/bus-name}}'
-        AWS_EVENT_STACK_2_SQS_QUEUE_URL: !Sub '{{resolve:ssm:/geo-jobs/${Env}/2/sqs/mailbox-queue-url}}'
-        AWS_EVENT_STACK_2_EVENTBRIDGE_BUS: !Sub '{{resolve:ssm:/geo-jobs/${Env}/2/eventbridge/bus-name}}'
-        AWS_S3_BUCKET: !Sub '{{resolve:ssm:/geo-jobs/${Env}/s3/bucket-name}}'
+        AWS_EVENT_STACK_1_SQS_QUEUE_URL: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/1/sqs/mailbox-queue-url}}'
+        AWS_EVENT_STACK_1_EVENTBRIDGE_BUS: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/1/eventbridge/bus-name}}'
+        AWS_EVENT_STACK_2_SQS_QUEUE_URL: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/2/sqs/mailbox-queue-url}}'
+        AWS_EVENT_STACK_2_EVENTBRIDGE_BUS: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/2/eventbridge/bus-name}}'
+        AWS_S3_BUCKET: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/s3/bucket-name}}'
         AWS_SES_SOURCE: lou@bpartners.app
         
-        SPRING_DATASOURCE_URL: !Sub '{{resolve:ssm:/geo-jobs/${Env}/db/url}}'
+        SPRING_DATASOURCE_URL: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/db/url}}'
         SPRING_DATASOURCE_USERNAME: !Sub '{{resolve:ssm:/geo-jobs/${Env}/db/user/username}}'
         SPRING_DATASOURCE_PASSWORD: !Sub '{{resolve:ssm:/geo-jobs/${Env}/db/user/password}}'
         
-        SENTRY_DSN: !Sub '{{resolve:ssm:/geo-jobs/sentry/dsn}}'
+        SENTRY_DSN: !Sub '{{resolve:ssm:/geo-jobs-2/sentry/dsn}}'
         SENTRY_ENVIRONMENT: !Ref Env
         TILES_DOWNLOADER_API_URL: !Sub '{{resolve:ssm:/geo-jobs/${Env}/tiles/downloader/url}}'
-        TILE_DETECTION_API_URLS: !Sub '{{resolve:ssm:/geo-jobs/${Env}/tiles/detection/urls}}'
+        TILE_DETECTION_API_URLS: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/tiles/detection/urls}}'
         ADMIN_API_KEY: !Sub '{{resolve:ssm:/bpartners-geo-jobs/${Env}/admin/api-key}}'
         ANNOTATOR_API_URL: !Sub '{{resolve:ssm:/geo-jobs/${Env}/annotator/url}}'
         ANNOTATOR_API_KEY: !Sub '{{resolve:ssm:/geo-jobs/${Env}/annotator/api/key}}'
@@ -66,7 +66,7 @@ Resources:
       Handler: app.bpartners.geojobs.ApiEventHandler::handleRequest
       MemorySize: 2048
       Timeout: 30
-      Role: !Sub '{{resolve:ssm:/geo-jobs/${Env}/execution/role-arn}}'
+      Role: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/execution/role-arn}}'
       
       Events:
         ApiCall:
@@ -83,13 +83,13 @@ Resources:
       Handler: app.bpartners.geojobs.MailboxEventHandler::handleRequest
       MemorySize: 512
       Timeout: 600 #note(sqs-visibility)
-      Role: !Sub '{{resolve:ssm:/geo-jobs/${Env}/execution/role-arn}}'
+      Role: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/execution/role-arn}}'
       
       Events:
         AllEvents:
           Type: SQS
           Properties:
-            Queue: !Sub '{{resolve:ssm:/geo-jobs/${Env}/1/sqs/mailbox-queue-arn}}'
+            Queue: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/1/sqs/mailbox-queue-arn}}'
             BatchSize: 1
       ReservedConcurrentExecutions: 60
 
@@ -99,13 +99,13 @@ Resources:
       Handler: app.bpartners.geojobs.MailboxEventHandler::handleRequest
       MemorySize: 512
       Timeout: 600 #note(sqs-visibility)
-      Role: !Sub '{{resolve:ssm:/geo-jobs/${Env}/execution/role-arn}}'
+      Role: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/execution/role-arn}}'
       
       Events:
         AllEvents:
           Type: SQS
           Properties:
-            Queue: !Sub '{{resolve:ssm:/geo-jobs/${Env}/2/sqs/mailbox-queue-arn}}'
+            Queue: !Sub '{{resolve:ssm:/geo-jobs-2/${Env}/2/sqs/mailbox-queue-arn}}'
             BatchSize: 1
       ReservedConcurrentExecutions: 60
 
@@ -125,7 +125,7 @@ Resources:
   ApiUrlSSM:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: !Join [ '', [ /geo-jobs/, !Ref Env, /api/url ] ]
+      Name: !Join [ '', [ /geo-jobs-2/, !Ref Env, /api/url ] ]
       Type: String
       Value: !Sub "https://${FrontalServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
 
